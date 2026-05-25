@@ -1194,19 +1194,28 @@ play_video() {
 
   case "$player" in
   mpv)
-    player="$player --keep-open=no --really-quiet --input-ipc-server=$YTSURF_SOCKET"
-    [ "$audio_only" == true ] && player="$player --no-video"
-    [ -n "$format_code" ] && player="$player --ytdl-format=\"$format_code\""
-
-    player="$player $video_url"
-    eval "$player"
+    if [ "$audio_only" == true ]; then
+      local cmd="mpv --profile=audio --keep-open=no"
+      [ -n "$format_code" ] && cmd="$cmd --ytdl-format=\"$format_code\""
+      eval "$cmd \"$video_url\""
+    else
+      player="$player --keep-open=no --really-quiet --input-ipc-server=$YTSURF_SOCKET"
+      [ -n "$format_code" ] && player="$player --ytdl-format=\"$format_code\""
+      player="$player $video_url"
+      eval "$player"
+    fi
     player="mpv"
     ;;
   umpv)
-    local mpv_opts="mpv --keep-open=no --really-quiet"
-    [ "$audio_only" == true ] && mpv_opts="$mpv_opts --no-video"
-    [ -n "$format_code" ] && mpv_opts="$mpv_opts --ytdl-format=\"$format_code\""
-    MPV="$mpv_opts" umpv "$video_url"
+    if [ "$audio_only" == true ]; then
+      local cmd="mpv --profile=audio --keep-open=no"
+      [ -n "$format_code" ] && cmd="$cmd --ytdl-format=\"$format_code\""
+      eval "$cmd \"$video_url\""
+    else
+      local mpv_opts="mpv --keep-open=no --really-quiet"
+      [ -n "$format_code" ] && mpv_opts="$mpv_opts --ytdl-format=\"$format_code\""
+      MPV="$mpv_opts" umpv "$video_url"
+    fi
     ;;
   syncplay)
     [ "$audio_only" == true ] && {
