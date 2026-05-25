@@ -108,7 +108,7 @@ process_channel() {
   title=$(xargs <<<"$title")
   channel=$(xargs <<<"$channel" | jq -nr --arg str "$channel" '$str|@uri')
   curl -s --compressed --http1.1 --keepalive-time 30 \
-    "https://www.youtube.com/$channel/videos" |
+    "https://piped.kavin.rocks/$channel/videos" |
     sed -n 's/.*var ytInitialData = \(.*\);<\/script>.*/\1/p' |
     jq --arg author "$title" '
       .contents.twoColumnBrowseResultsRenderer.tabs[1]
@@ -138,7 +138,7 @@ search_channel() {
     local jsonData
     encodedQuery=$(jq -rn --arg q "$query" '$q|@uri')
     jsonData=$(
-      curl -s --compressed --http1.1 --keepalive-time 30 "https://www.youtube.com/results?search_query=${encodedQuery}&sp=EgIQAg%3D%3D&hl=en&gl=US" |
+      curl -s --compressed --http1.1 --keepalive-time 30 "https://piped.kavin.rocks/results?search_query=${encodedQuery}&sp=EgIQAg%3D%3D&hl=en&gl=US" |
         sed -n 's/.*var ytInitialData = \(.*\);<\/script>.*/\1/p' |
         jq -r '.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents
       | map(.channelRenderer)
@@ -175,7 +175,7 @@ send_notification() {
 #Send to clipboard
 clip() {
   local url
-  url="${*//www.youtube.com\/watch?v=/youtu.be/}"
+  url="${*//piped.kavin.rocks\/watch?v=/youtu.be/}"
   if command -v wl-copy &>/dev/null; then
     printf "%s" "$url" | wl-copy
   elif command -v xclip &>/dev/null; then
@@ -663,7 +663,7 @@ sync_subs() {
     else
       chosen_action=$(printf "%s\n" "${items[@]}" | fzf --prompt="$prompt" --header="$header")
     fi
-    if json_data=$(yt-dlp --cookies-from-browser "$chosen_action" --flat-playlist https://www.youtube.com/feed/channels -J); then
+    if json_data=$(yt-dlp --cookies-from-browser "$chosen_action" --flat-playlist https://piped.kavin.rocks/feed/channels -J); then
       echo "$json_data" | jq -r '.entries
       | map({
              channelId:.channel_id,
@@ -1009,7 +1009,7 @@ process_queue() {
   if [[ "$download_mode" == true ]]; then
     for i in "${!video_id_list[@]}"; do
       send_notification "Ytsurf" "Downloading ${video_title_list[$i]}"
-      local video_url="https://www.youtube.com/watch?v=${video_id_list[$i]}"
+      local video_url="https://piped.kavin.rocks/watch?v=${video_id_list[$i]}"
       download_video "$video_url" "$format_code"
     done
   else
@@ -1028,7 +1028,7 @@ process_queue() {
     for ((i = ${#video_id_list[@]} - 1; i >= 0; i--)); do
       add_to_history "${video_id_list[$i]}" "${video_title_list[$i]}" "${video_duration_list[$i]}" "${video_author_list[$i]}" "${video_view_list[$i]}" "${video_published_list[$i]}" "${video_thumbnail_list[$i]}"
       send_notification "Ytsurf" "Playing ${video_title_list[$i]}"
-      local video_url="https://www.youtube.com/watch?v=${video_id_list[$i]}"
+      local video_url="https://piped.kavin.rocks/watch?v=${video_id_list[$i]}"
       play_video "$video_url" "$format_code"
     done
   fi
@@ -1114,7 +1114,7 @@ handle_playlist() {
   for ((i = ${#video_id_list[@]} - 1; i >= 0; i--)); do
     add_to_history "${video_id_list[$i]}" "${video_title_list[$i]}" "${video_duration_list[$i]}" "${video_author_list[$i]}" "${video_view_list[$i]}" "${video_published_list[$i]}" "${video_thumbnail_list[$i]}"
     send_notification "Ytsurf" "Playing ${video_title_list[$i]}"
-    local video_url="https://www.youtube.com/watch?v=${video_id_list[$i]}"
+    local video_url="https://piped.kavin.rocks/watch?v=${video_id_list[$i]}"
     play_video "$video_url" "$format_code"
   done
   playlist_mode=false
@@ -1201,6 +1201,12 @@ play_video() {
     player="$player $video_url"
     eval "$player"
     player="mpv"
+    ;;
+  umpv)
+    local mpv_opts="mpv --keep-open=no --really-quiet"
+    [ "$audio_only" == true ] && mpv_opts="$mpv_opts --no-video"
+    [ -n "$format_code" ] && mpv_opts="$mpv_opts --ytdl-format=\"$format_code\""
+    MPV="$mpv_opts" umpv "$video_url"
     ;;
   syncplay)
     [ "$audio_only" == true ] && {
@@ -1328,7 +1334,7 @@ handle_history() {
   # Extract video details
   local video_id
   video_id="${history_ids[$selected_index]}"
-  video_url="https://www.youtube.com/watch?v=$video_id"
+  video_url="https://piped.kavin.rocks/watch?v=$video_id"
 
   [ "$copy_mode" == true ] && {
     clip "$video_url"
@@ -1428,7 +1434,7 @@ fetch_search_results() {
     next_response=$(curl -s --compressed --http1.1 \
       -H "Content-Type: application/json" \
       -d "$body" \
-      "https://www.youtube.com/youtubei/v1/search?key=AIzaSyAO90d0o_cimLECsGBARHaB_YvqXMCm5Bk")
+      "https://piped.kavin.rocks/youtubei/v1/search?key=AIzaSyAO90d0o_cimLECsGBARHaB_YvqXMCm5Bk")
 
     next_json=$(echo "$next_response" |
       jq -r "
@@ -1629,7 +1635,7 @@ handle_selection() {
   # Extract video details
   local video_id video_author video_duration video_views video_published video_thumbnail
   video_id=$(echo "$json_data" | jq -r ".[$selected_index].id")
-  video_url="https://www.youtube.com/watch?v=$video_id"
+  video_url="https://piped.kavin.rocks/watch?v=$video_id"
   video_author=$(echo "$json_data" | jq -r ".[$selected_index].author")
   video_duration=$(echo "$json_data" | jq -r ".[$selected_index].duration")
   video_views=$(echo "$json_data" | jq -r ".[$selected_index].views")
