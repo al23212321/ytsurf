@@ -201,14 +201,3 @@ Check out [FUTURE_FEATURES.md](FUTURE_FEATURES.md) for upcoming ideas.
 Released under the [GNU General Public License v3.0](LICENSE).
 
 
-##  Star History
-
-<## Star History
-
-<a href="https://www.star-history.com/?repos=ytsurf%2Fytsurf&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=ytsurf/ytsurf&type=date&theme=dark&legend=top-left&sealed_token=SoUQKb3tzMR32-XG8a3TeSgadHZlFT76p1CQOH3LSCJSEueJgNptTmupNFz0dT68lkJAMlVRkrjf02JrsX4ByD60XP481r5UP9yPyLb3lvaaQdp-rv1ahxBqtqINAXE2usbrvQwJ9l-EEoDEYRZcIJoJkZt_do3800uANkTSMmn-AOB8fE8qxztSnTXv" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=ytsurf/ytsurf&type=date&legend=top-left&sealed_token=SoUQKb3tzMR32-XG8a3TeSgadHZlFT76p1CQOH3LSCJSEueJgNptTmupNFz0dT68lkJAMlVRkrjf02JrsX4ByD60XP481r5UP9yPyLb3lvaaQdp-rv1ahxBqtqINAXE2usbrvQwJ9l-EEoDEYRZcIJoJkZt_do3800uANkTSMmn-AOB8fE8qxztSnTXv" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=ytsurf/ytsurf&type=date&legend=top-left&sealed_token=SoUQKb3tzMR32-XG8a3TeSgadHZlFT76p1CQOH3LSCJSEueJgNptTmupNFz0dT68lkJAMlVRkrjf02JrsX4ByD60XP481r5UP9yPyLb3lvaaQdp-rv1ahxBqtqINAXE2usbrvQwJ9l-EEoDEYRZcIJoJkZt_do3800uANkTSMmn-AOB8fE8qxztSnTXv" />
- </picture>
-</a>
